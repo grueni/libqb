@@ -1,0 +1,330 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Libqb by grueni</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Libqb</h1>
+        <p>libqb is a library providing high performance logging, tracing, ipc, and poll.</p>
+
+        <p class="view"><a href="https://github.com/grueni/libqb">View the Project on GitHub <small>grueni/libqb</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/grueni/libqb/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/grueni/libqb/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/grueni/libqb">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>grueni/libqb</h1>
+
+<h2>What is grueni/libqb?</h2>
+
+<p>This site contains informations about compiling libqb for Solaris 11 and OpenIndiana.
+Look here for <a href="http://grueni.github.com/libqb">compiling</a> of the complete Corosync suite.</p>
+
+<h2>For more information about libqb look at:</h2>
+
+<ul>
+<li><a href="https://github.com/asalkeld/libqb/wiki">wiki of libqb</a></li>
+</ul><h2>Dependencies</h2>
+
+<ul>
+<li>Solaris 11U7</li>
+<li>csw</li>
+<li>additional packages from the Solaris repository</li>
+</ul><h2>Source Control (GIT)</h2>
+
+<pre><code>git clone https://github.com/grueni/libqb.git
+</code></pre>
+
+<p><a href="https://github.com/grueni/libqb">See Github</a></p>
+
+<h2>Prepare the build system for Solaris</h2>
+
+<p>Install additional packages from the Solaris repository. The following command install all packages necessary to compile the complete Corosync suite not only Libqb.</p>
+
+<div class="highlight"><pre>pkg install autoconf automake-110 gnu-m4 gettext system/header header-math libnet <span class="se">\</span>
+   ipmitool gnu-make developer/build/libtool library/libtool/libltdl <span class="se">\</span>
+   library/security/nss library/ncurses library/security/openssl text/gnu-gettext <span class="se">\</span>
+   system/io/infiniband/reliable-datagram-sockets-v3 library/gnutls <span class="se">\</span>
+   developer/versioning/mercurial git <span class="se">\</span>
+   data/docbook/docbook-style-xsl data/docbook/docbook-style-dsssl /data/docbook/docbook-dtds
+</pre></div>
+
+<p>Install <a href="http://www.opencsw.org/manual/for-administrators/getting-started.html">OpenCSW</a>. 
+You should install at least the following packages:     </p>
+
+<pre><code>CSWalternatives
+CSWaugeas
+CSWbdb48
+CSWcacertificates
+CSWcas-initsmf
+CSWcas-migrateconf
+CSWcas-preserveconf
+CSWcas-texinfo
+CSWcas-usergroup
+CSWcommon
+CSWcoreutils
+CSWfacter
+CSWggettext-data
+CSWiconv
+CSWlibcharset1
+CSWlibgcc-s1
+CSWlibgdbm3
+CSWlibgmp10
+CSWlibgnugetopt0
+CSWlibhistory4
+CSWlibhistory5
+CSWlibhistory6
+CSWlibiconv2
+CSWlibintl8
+CSWlibncurses5
+CSWlibncursesw5
+CSWlibpanel5
+CSWlibpanelw5
+CSWlibreadline4
+CSWlibreadline5
+CSWlibreadline6
+CSWlibruby18-1
+CSWlibssl0-9-8
+CSWlibxml2-2
+CSWlibz1
+CSWncurses
+CSWosslrt
+CSWpkgutil
+CSWreadline
+CSWruby18
+CSWruby18-dev
+CSWrubyaugeas
+CSWrubygems
+CSWterminfo
+CSWzlib
+</code></pre>
+
+<h2>Compile the Corosync suite</h2>
+
+<h3>Environment for compiling</h3>
+
+<p>We install Coroync in /opt/ha. Change the PREFIX if you would like to use another location. BUILDPATH is the root folder to create the source code folders.</p>
+
+<div class="highlight"><pre><span class="nb">export </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s1">'-D__EXTENSIONS__ -D_POSIX_PTHREAD_SEMANTICS -DNAME_MAX=255 -DHOST_NAME_MAX=255 -I/usr/include -I/opt/ha/include -lsocket -lnsl'</span>
+<span class="nb">export </span><span class="nv">PREFIX</span><span class="o">=</span>/opt/ha
+<span class="nb">export </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s1">'-R/usr/gnu/lib -L${PREFIX}/lib -L/usr/gnu/lib -L/lib -L/usr/lib'</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/opt/csw/bin:/usr/gnu/bin:/usr/bin:/usr/sbin:<span class="nv">$PREFIX</span>/bin
+<span class="nb">export </span><span class="nv">LCRSODIR</span><span class="o">=</span>/usr/libexec/lcrso 
+<span class="nb">export </span><span class="nv">CLUSTER_USER</span><span class="o">=</span>hacluster
+<span class="nb">export </span><span class="nv">CLUSTER_GROUP</span><span class="o">=</span>haclient
+<span class="nb">export </span><span class="nv">BUILDPATH</span><span class="o">=</span>/export/builds3
+</pre></div>
+
+<h3>Packages    to compile</h3>
+
+<ul>
+<li><a href="http://www.stafford.uklinux.net/libesmtp/">libESMTP</a></li>
+<li><a href="http://check.sourceforge.net/">Check</a></li>
+<li><a href="http://hg.linux-ha.org/glue">Reusable Cluster Components</a></li>
+<li>The <a href="https://github.com/ClusterLabs/resource-agents">resource-agents</a> from <a href="http://www.clusterlabs.org/">ClusterLabs</a>
+</li>
+<li><a href="https://github.com/asalkeld/libqb">libqb</a></li>
+<li><a href="http://dl.ambiweb.de/mirrors/ftp.i-scream.org/libstatgrab/">libstatgrab</a></li>
+<li><a href="http://www.corosync.org/doku.php?id=welcome">Corosync</a></li>
+<li><a href="http://hg.linux-ha.org/heartbeat-STABLE_3_0">Heartbeat</a></li>
+<li><a href="https://github.com/beekhof/pacemaker">Pacemaker</a></li>
+<li><a href="http://savannah.nongnu.org/projects/crmsh/">crmsh</a></li>
+</ul><h3>Compile libESMTP</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span>
+<span class="nb">export </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s1">'-std=c89 -D__EXTENSIONS__ -DNAME_MAX=255 -DHOST_NAME_MAX=255'</span>
+wget http://www.stafford.uklinux.net/libesmtp/libesmtp-1.0.6.tar.gz
+gtar zxvf libesmtp-1.0.6.tar.gz
+<span class="nb">cd </span>libesmtp-1.0.6
+mkdir m4
+autoreconf -i
+./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> 
+perl -pi -e <span class="s1">'s#// TODO: handle GEN_IPADD##'</span> smtp-tls.c
+gmake
+gmake install 
+cp auth-client.h <span class="nv">$PREFIX</span>/include
+cp auth-plugin.h <span class="nv">$PREFIX</span>/include
+cp libesmtp.h    <span class="nv">$PREFIX</span>/include
+<span class="c"># restore CFLAGS</span>
+<span class="nb">export </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s1">'-D__EXTENSIONS__ -D_POSIX_PTHREAD_SEMANTICS -DNAME_MAX=255 -DHOST_NAME_MAX=255 -I/usr/include -I$PREFIX/include -lsocket -lnsl'</span>
+</pre></div>
+
+<h3>Compile Check</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span>
+wget -O check-0.9.8.tar.gz http://sourceforge.net/projects/check/files/latest/download?source<span class="o">=</span>files
+gtar zxfv check-0.9.8.tar.gz
+<span class="nb">cd </span>check-0.9.8
+./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> 
+gmake <span class="o">&amp;&amp;</span> gmake install
+<span class="c"># there is an error in creation of the tests, after installation the creation suceeds</span>
+gmake <span class="o">&amp;&amp;</span> gmake install
+</pre></div>
+
+<h3>Compile Reusable Cluster Components</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span>
+wget -O cluster-glue.tar.bz2 http://hg.linux-ha.org/glue/archive/tip.tar.bz2
+gtar jxvf cluster-glue.tar.bz2
+<span class="nb">cd </span>Reusable-Cluster-Components-*
+perl -pi -e <span class="s1">'s/-Wunsigned-char//g'</span> configure.ac
+perl -pi -e <span class="s1">'s/-fstack-protector-all//g'</span> configure.ac
+perl -pi -e <span class="s1">'s#\$\(XSLTPROC\) \\#\$\(XSLTPROC\) --novalid \\#g'</span> doc/Makefile.am
+./autogen.sh 
+./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --enable-fatal-warnings<span class="o">=</span>no --with-daemon-user<span class="o">=</span><span class="k">${</span><span class="nv">CLUSTER_USER</span><span class="k">}</span> --with-daemon-group<span class="o">=</span><span class="k">${</span><span class="nv">CLUSTER_GROUP</span><span class="k">}</span> --with-ocf-root<span class="o">=</span><span class="nv">$PREFIX</span>/usr/lib/ocf
+gmake <span class="o">&amp;&amp;</span> gmake install
+</pre></div>
+
+<h3>Compile resource-agents</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span> 
+wget -O resource-agents.tar.gz https://github.com/ClusterLabs/resource-agents/tarball/master
+gtar zxvf resource-agents.tar.gz
+<span class="nb">cd </span>ClusterLabs-resource-agents-*/
+perl -pi -e <span class="s1">'s/unsigned-char//g'</span> configure.ac
+perl -pi -e <span class="s1">'s#\$\(XSLTPROC\) \\#\$\(XSLTPROC\) --novalid \\#g'</span> doc/man/Makefile.am
+./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --with-ocf-root<span class="o">=</span><span class="nv">$PREFIX</span>/usr/lib/ocf --enable-fatal-warnings<span class="o">=</span>no
+gmake <span class="o">&amp;&amp;</span> gmake install 
+</pre></div>
+
+<h3>Compile libqb</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span> 
+wget https://fedorahosted.org/releases/q/u/quarterback/libqb-0.14.1.tar.gz
+gtar xvf libqb-0.14.1.tar.gz
+<span class="nb">cd </span>libqb-0.14.1
+perl -pi -e <span class="s1">'s/unsigned-char//g'</span> configure.ac
+perl -pi -e <span class="s1">'s/gnu89-inline//g'</span> configure.ac
+./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --enable-debug <span class="o">&amp;&amp;</span> gmake
+gmake <span class="o">&amp;&amp;</span> gmake install 
+</pre></div>
+
+<h3>Compile libstatgrab</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span>
+wget http://dl.ambiweb.de/mirrors/ftp.i-scream.org/libstatgrab/libstatgrab-0.17.tar.gz
+gtar zxvf libstatgrab-0.17.tar.gz
+<span class="nb">cd </span>libstatgrab-0.17
+./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> 
+perl -pi -e <span class="s1">'s/libstatgrab_la_LIBADD =/libstatgrab_la_LIBADD = -lkstat -ldevinfo/g'</span>  ./src/libstatgrab/Makefile 
+</pre></div>
+
+<h3>Compile Corosync</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span>
+wget ftp://ftp:downloads@ftp.corosync.org/downloads/corosync-2.0.1/corosync-2.0.1.tar.gz 
+gtar zxvf corosync-2.0.1.tar.gz
+<span class="nb">cd </span>corosync-2.0.1
+<span class="c"># changed manually  exec/Makefile.am</span>
+<span class="c"># changed manually  common_lib/Makefile.am</span>
+<span class="c"># changed manually  lib/Makefile.am</span>
+<span class="nb">export </span><span class="nv">LIBQBLIBQB_CFLAGS</span><span class="o">=</span>-I<span class="nv">$PREFIX</span>/include/qb
+<span class="nb">export </span><span class="nv">LIBQB_LIBS</span><span class="o">=</span><span class="s1">'-R${PREFIX}/lib -L${PREFIX}/lib -lqb'</span>
+<span class="nb">export </span><span class="nv">nss_CFLAGS</span><span class="o">=</span>-I/usr/include/mps
+<span class="nb">export </span><span class="nv">nss_LIBS</span><span class="o">=</span><span class="s1">'-R/usr/lib/mps -L/usr/lib/mps -lnss3 -lsmime3 -lssl3 -lnssutil3 -lplds4 -lplc4 -lnspr4 -lpthread -ldl -lposix4'</span>
+<span class="nb">export </span><span class="nv">rdmacm_CFLAGS</span><span class="o">=</span>-I/usr/include
+<span class="nb">export </span><span class="nv">rdmacm_LIBS</span><span class="o">=</span><span class="s1">'-R/usr/lib -L/usr/lib'</span>
+<span class="nb">export </span><span class="nv">ibverbs_CFLAGS</span><span class="o">=</span>-I/usr/include
+<span class="nb">export </span><span class="nv">ibverbs_LIBS</span><span class="o">=</span><span class="s1">'-R/usr/lib -L/usr/lib -libverbs -lrdmacm'</span>
+perl -pi -e <span class="s1">'s/unsigned-char//g'</span> configure.ac
+perl -pi -e <span class="s1">'s/gnu89-inline//g'</span> configure.ac
+perl -pi -e <span class="s1">'s#awk#gawk#'</span> build-aux/genman
+perl -pi -e <span class="s1">'s#sed -i#gsed -i#'</span> build-aux/genman
+perl -pi -e <span class="s1">'s#sed -i#gsed -i#'</span> init/Makefile.am
+perl -pi -e <span class="s1">'s#QB_IPC_SHM#QB_IPC_SOCKET#'</span> /export/builds/corosync-2.0.1/exec/ipc_glue.c
+./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --localstatedir<span class="o">=</span><span class="nv">$PREFIX</span>/var --enable-monitoring --enable-snmp --enable-smtp --enable-xmlconf --enable-rdma --enable-testagents --enable-augeas --enable-debug
+gmake clean <span class="o">&amp;&amp;</span> gmake install <span class="o">&amp;&amp;</span> chown -R hacluster:haclient <span class="nv">$PREFIX</span>
+</pre></div>
+
+<h3>Compile Heartbeat</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span>
+wget http://hg.linux-ha.org/heartbeat-STABLE_3_0/archive/tip.tar.bz2
+gtar jxvf tip.tar.bz2
+<span class="nb">cd </span>Heartbeat-3-0-*/
+<span class="nb">export </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s1">'-R/usr/gnu/lib -L${PREFIX}/lib -L/usr/gnu/lib -L/lib -L/usr/lib -lsocket -lnsl'</span>
+./bootstrap
+./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --enable-quorumd 
+gmake
+gmake install
+</pre></div>
+
+<h3>Compile Pacemaker</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span>
+mkdir pacemaker-1.1.7
+<span class="nb">cd </span>pacemaker-1.1.7
+git init
+git remote add -t 1.1 -f origin https://github.com/ClusterLabs/pacemaker.git
+git checkout 1.1
+
+perl -pi -e <span class="s1">'s/-Wunsigned-char//g'</span> configure.ac
+perl -pi -e <span class="s1">'s/-fstack-protector-all//g'</span> configure.ac
+perl -pi -e <span class="s1">'s#-Wno-unused-but-set-variable##'</span> configure.ac
+perl -pi -e <span class="s1">'s#stdout#stdoutx#'</span>   include/crm/stonith-ng-internal.h
+perl -pi -e <span class="s1">'s#&gt;stdout#&gt;stdoutx#'</span> lib/fencing/st_client.c
+perl -pi -e <span class="s1">'s#&gt;stdout#&gt;stdoutx#'</span> fencing/commands.c
+
+./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span>  --enable-fatal-warnings<span class="o">=</span>no --with-corosync --with-snmp --with-esmtp --with-cs-quorum --with-acl<span class="o">=</span>no
+gmake clean <span class="o">&amp;&amp;</span> gmake <span class="o">&amp;&amp;</span> gmake install <span class="o">&amp;&amp;</span> chown -R hacluster:haclient <span class="nv">$PREFIX</span>
+
+
+mkdir <span class="nv">$PREFIX</span>/etc/corosync/uidgid.d
+<span class="o">(</span>
+<span class="nb">echo</span> <span class="s2">"uidgid {"</span>
+<span class="nb">echo</span> <span class="s2">"   uid: `id -u ${CLUSTER_USER}`"</span>
+<span class="nb">echo</span> <span class="s2">"   gid: `id -g ${CLUSTER_USER}`"</span>
+<span class="nb">echo</span> <span class="s2">"}"</span>
+<span class="o">)</span> &gt; <span class="nv">$PREFIX</span>/etc/corosync/uidgid.d/uid.conf
+</pre></div>
+
+<h3>Compile crmsh</h3>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span>
+hg clone http://hg.savannah.nongnu.org/hgweb/crmsh/
+<span class="nb">cd </span>crmsh
+perl -pi -e <span class="s1">'s#ps -e -o pid,command#ps -e -o pid,comm#'</span> ./modules/utils.py
+perl -pi -e <span class="s1">'s#a2x -f manpage#a2x -L -f manpage#'</span> doc/Makefile.am
+./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span>  <span class="o">&amp;&amp;</span> gmake clean <span class="o">&amp;&amp;</span> gmake install
+<span class="c"># check if it works</span>
+<span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="k">${</span><span class="nv">PREFIX</span><span class="k">}</span>/lib/python2.6/site-packages
+<span class="k">${</span><span class="nv">PREFIX</span><span class="k">}</span>/sbin/crm
+</pre></div>
+
+<h2>How you can help</h2>
+
+<p>If you find this project useful, you may want to consider supporting its future development.
+There are a number of ways to support the project.</p>
+
+<ul>
+<li>Test and report issues.</li>
+<li>Help others on the <a href="https://fedorahosted.org/mailman/listinfo/quarterback-devel">mailing list</a>.</li>
+<li>Contribute documentation, examples and test cases.</li>
+<li>Contribute patches.</li>
+<li>Spread the word.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/grueni">grueni</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
