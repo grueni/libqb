@@ -52,7 +52,7 @@ Look here for <a href="http://grueni.github.com/libqb">compiling</a> of the comp
 
 <p><a href="https://github.com/grueni/libqb">See Github</a></p>
 
-<h2>Prepare the build system for Solaris</h2>
+<h2>Prepare the build system for Solaris 11U7</h2>
 
 <p>Install additional packages from the Solaris repository. The following command install all packages necessary to compile the complete Corosync suite not only Libqb.</p>
 
@@ -64,55 +64,35 @@ Look here for <a href="http://grueni.github.com/libqb">compiling</a> of the comp
    data/docbook/docbook-style-xsl data/docbook/docbook-style-dsssl /data/docbook/docbook-dtds
 </pre></div>
 
-<p>Install <a href="http://www.opencsw.org/manual/for-administrators/getting-started.html">OpenCSW</a>. 
-You should install at least the following packages:     </p>
+<h2>Prepare the build system for OpenIndiana 151a6</h2>
 
-<pre><code>CSWalternatives
-CSWaugeas
-CSWbdb48
-CSWcacertificates
-CSWcas-initsmf
-CSWcas-migrateconf
-CSWcas-preserveconf
-CSWcas-texinfo
-CSWcas-usergroup
-CSWcommon
-CSWcoreutils
-CSWfacter
-CSWggettext-data
-CSWiconv
-CSWlibcharset1
-CSWlibgcc-s1
-CSWlibgdbm3
-CSWlibgmp10
-CSWlibgnugetopt0
-CSWlibhistory4
-CSWlibhistory5
-CSWlibhistory6
-CSWlibiconv2
-CSWlibintl8
-CSWlibncurses5
-CSWlibncursesw5
-CSWlibpanel5
-CSWlibpanelw5
-CSWlibreadline4
-CSWlibreadline5
-CSWlibreadline6
-CSWlibruby18-1
-CSWlibssl0-9-8
-CSWlibxml2-2
-CSWlibz1
-CSWncurses
-CSWosslrt
-CSWpkgutil
-CSWreadline
-CSWruby18
-CSWruby18-dev
-CSWrubyaugeas
-CSWrubygems
-CSWterminfo
-CSWzlib
-</code></pre>
+<p>Install additional packages from the Solaris repository. The following command install all packages necessary to compile the complete Corosync suite not only Libqb.</p>
+
+<div class="highlight"><pre>pkg install sfe/developer/gcc-46 developer/gnu-binutils <span class="se">\ </span>
+    rsync gnu-tar wget swig <span class="se">\</span>
+    autoconf automake-110 gnu-m4 gettext system/header header-math libnet <span class="se">\</span>
+    ipmitool gnu-make developer/build/libtool library/libtool/libltdl <span class="se">\</span>
+    library/ncurses library/security/openssl text/gnu-gettext <span class="se">\</span>
+    library/gnutls developer/versioning/mercurial <span class="se">\</span>
+    pkg://openindiana.org/developer/versioning/git <span class="se">\</span>
+    SUNWcs driver/network/ofk system/header <span class="se">\</span>
+    meld developer/library/lint developer/object-file <span class="se">\</span>
+    system/library/mozilla-nss/header-nss library/nspr/header-nspr
+</pre></div>
+
+<h2>Install additional packages from opencsw</h2>
+
+<p>Install <a href="http://www.opencsw.org/manual/for-administrators/getting-started.html">OpenCSW</a>. 
+I got an error from curl and could repair it as follows.</p>
+
+<h1>repair missing certificates in curl</h1>
+
+<h1><a href="http://openindiana.org/pipermail/userland-team/2011-September/000094.html">http://openindiana.org/pipermail/userland-team/2011-September/000094.html</a></h1>
+
+<p>mkdir -p /etc/curl &amp;&amp; cat /etc/certs/CA/*.pem &gt; /etc/curl/curlCA</p>
+
+<p>pkgadd -d <a href="http://get.opencsw.org/now">http://get.opencsw.org/now</a>
+/opt/csw/bin/pkgutil -i automake autoconf libtool gsed CSWggettext pkgconfig augeas</p>
 
 <h2>Compile the Corosync suite</h2>
 
