@@ -246,7 +246,8 @@ perl -pi -e <span class="s1">'s/gnu89-inline//g'</span> configure.ac
 perl -pi -e <span class="s1">'s#awk#gawk#'</span> build-aux/genman
 perl -pi -e <span class="s1">'s#sed -i#gsed -i#'</span> build-aux/genman
 perl -pi -e <span class="s1">'s#sed -i#gsed -i#'</span> init/Makefile.am
-perl -pi -e <span class="s1">'s#QB_IPC_SHM#QB_IPC_SOCKET#'</span> /export/builds/corosync-2.0.1/exec/ipc_glue.c
+<span class="c"># not necessary!</span>
+<span class="c"># perl -pi -e 's#QB_IPC_SHM#QB_IPC_SOCKET#' /export/builds/corosync-2.0.1/exec/ipc_glue.c</span>
 ./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --localstatedir<span class="o">=</span><span class="nv">$PREFIX</span>/var --enable-monitoring --enable-snmp --enable-smtp --enable-xmlconf --enable-rdma --enable-testagents --enable-augeas --enable-debug
 gmake clean <span class="o">&amp;&amp;</span> gmake install <span class="o">&amp;&amp;</span> chown -R hacluster:haclient <span class="nv">$PREFIX</span>
 </pre></div>
