@@ -61,14 +61,18 @@ Look here for <a href="http://grueni.github.com/libqb">compiling</a> of the comp
    library/security/nss library/ncurses library/security/openssl text/gnu-gettext <span class="se">\</span>
    system/io/infiniband/reliable-datagram-sockets-v3 library/gnutls <span class="se">\</span>
    developer/versioning/mercurial git <span class="se">\</span>
-   data/docbook/docbook-style-xsl data/docbook/docbook-style-dsssl /data/docbook/docbook-dtds
+   text/groff data/xml-common <span class="se">\</span>
+   data/docbook/docbook-style-xsl data/docbook/docbook-style-dsssl /data/docbook/docbook-dtds 
 </pre></div>
 
-<h2>Prepare the build system for OpenIndiana 151a6</h2>
+<h2>Prepare the build system for OpenIndiana 151a5</h2>
 
-<p>Install additional packages from the Solaris repository. The following command install all packages necessary to compile the complete Corosync suite not only Libqb.</p>
+<p>Install additional packages from the Solaris repository. The following command install all packages necessary to compile the complete Corosync suite not only Libqb.
+If you want use gcc 4.6 you need the sfe repository.
+All other packages are available from <a href="http://pkg.openindiana.org/dev">http://pkg.openindiana.org/dev</a>.</p>
 
-<div class="highlight"><pre>pkg install sfe/developer/gcc-46 developer/gnu-binutils <span class="se">\ </span>
+<div class="highlight"><pre>pkg <span class="nb">set</span>-publisher http://pkg.openindiana.org/sfe
+pkg install sfe/developer/gcc-46 developer/gnu-binutils <span class="se">\ </span>
     rsync gnu-tar wget swig <span class="se">\</span>
     autoconf automake-110 gnu-m4 gettext system/header header-math libnet <span class="se">\</span>
     ipmitool gnu-make developer/build/libtool library/libtool/libltdl <span class="se">\</span>
@@ -166,7 +170,7 @@ perl -pi -e <span class="s1">'s/-Wunsigned-char//g'</span> configure.ac
 perl -pi -e <span class="s1">'s/-fstack-protector-all//g'</span> configure.ac
 perl -pi -e <span class="s1">'s#\$\(XSLTPROC\) \\#\$\(XSLTPROC\) --novalid \\#g'</span> doc/Makefile.am
 ./autogen.sh 
-./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --enable-fatal-warnings<span class="o">=</span>no --with-daemon-user<span class="o">=</span><span class="k">${</span><span class="nv">CLUSTER_USER</span><span class="k">}</span> --with-daemon-group<span class="o">=</span><span class="k">${</span><span class="nv">CLUSTER_GROUP</span><span class="k">}</span> --with-ocf-root<span class="o">=</span><span class="nv">$PREFIX</span>/usr/lib/ocf
+./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --enable-fatal-warnings<span class="o">=</span>no --with-daemon-user<span class="o">=</span><span class="k">${</span><span class="nv">CLUSTER_USER</span><span class="k">}</span> --with-daemon-group<span class="o">=</span><span class="k">${</span><span class="nv">CLUSTER_GROUP</span><span class="k">}</span> --with-ocf-root<span class="o">=</span><span class="nv">$PREFIX</span>/lib/ocf
 gmake <span class="o">&amp;&amp;</span> gmake install
 </pre></div>
 
@@ -178,13 +182,14 @@ gtar zxvf resource-agents.tar.gz
 <span class="nb">cd </span>ClusterLabs-resource-agents-*/
 perl -pi -e <span class="s1">'s/unsigned-char//g'</span> configure.ac
 perl -pi -e <span class="s1">'s#\$\(XSLTPROC\) \\#\$\(XSLTPROC\) --novalid \\#g'</span> doc/man/Makefile.am
-./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --with-ocf-root<span class="o">=</span><span class="nv">$PREFIX</span>/usr/lib/ocf --enable-fatal-warnings<span class="o">=</span>no
+./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --enable-fatal-warnings<span class="o">=</span>no
 gmake <span class="o">&amp;&amp;</span> gmake install 
 </pre></div>
 
 <h3>Compile libqb</h3>
 
 <div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$BUILDPATH</span> 
+<span class="c"># assure that your download contains the last solaris patches from 08/23/ and 08/24/2012</span>
 wget https://fedorahosted.org/releases/q/u/quarterback/libqb-0.14.1.tar.gz
 gtar xvf libqb-0.14.1.tar.gz
 <span class="nb">cd </span>libqb-0.14.1
@@ -223,13 +228,13 @@ gtar zxvf corosync-2.0.1.tar.gz
 <span class="nb">export </span><span class="nv">ibverbs_LIBS</span><span class="o">=</span><span class="s1">'-R/usr/lib -L/usr/lib -libverbs -lrdmacm'</span>
 perl -pi -e <span class="s1">'s/unsigned-char//g'</span> configure.ac
 perl -pi -e <span class="s1">'s/gnu89-inline//g'</span> configure.ac
-perl -pi -e <span class="s1">'s#awk#gawk#'</span> build-aux/genman
+<span class="c"># obsolet if gawk could be found in your path</span>
+<span class="c"># perl -pi -e 's#awk#gawk#' build-aux/genman</span>
 perl -pi -e <span class="s1">'s#sed -i#gsed -i#'</span> build-aux/genman
 perl -pi -e <span class="s1">'s#sed -i#gsed -i#'</span> init/Makefile.am
 <span class="c"># not necessary!</span>
-<span class="c"># perl -pi -e 's#QB_IPC_SHM#QB_IPC_SOCKET#' /export/builds/corosync-2.0.1/exec/ipc_glue.c</span>
 ./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --localstatedir<span class="o">=</span><span class="nv">$PREFIX</span>/var --enable-monitoring --enable-snmp --enable-smtp --enable-xmlconf --enable-rdma --enable-testagents --enable-augeas --enable-debug
-gmake clean <span class="o">&amp;&amp;</span> gmake install <span class="o">&amp;&amp;</span> chown -R hacluster:haclient <span class="nv">$PREFIX</span>
+gmake clean <span class="o">&amp;&amp;</span> gmake install
 </pre></div>
 
 <h3>Compile Heartbeat</h3>
@@ -257,9 +262,10 @@ git checkout 1.1
 perl -pi -e <span class="s1">'s/-Wunsigned-char//g'</span> configure.ac
 perl -pi -e <span class="s1">'s/-fstack-protector-all//g'</span> configure.ac
 perl -pi -e <span class="s1">'s#-Wno-unused-but-set-variable##'</span> configure.ac
-perl -pi -e <span class="s1">'s#stdout#stdoutx#'</span>   include/crm/stonith-ng-internal.h
-perl -pi -e <span class="s1">'s#&gt;stdout#&gt;stdoutx#'</span> lib/fencing/st_client.c
-perl -pi -e <span class="s1">'s#&gt;stdout#&gt;stdoutx#'</span> fencing/commands.c
+<span class="c"># obsolet with newest master</span>
+<span class="c"># perl -pi -e 's#stdout#stdoutx#'   include/crm/stonith-ng-internal.h</span>
+<span class="c"># perl -pi -e 's#&gt;stdout#&gt;stdoutx#' lib/fencing/st_client.c</span>
+<span class="c"># perl -pi -e 's#&gt;stdout#&gt;stdoutx#' fencing/commands.c</span>
 
 ./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span>  --enable-fatal-warnings<span class="o">=</span>no --with-corosync --with-snmp --with-esmtp --with-cs-quorum --with-acl<span class="o">=</span>no
 gmake clean <span class="o">&amp;&amp;</span> gmake <span class="o">&amp;&amp;</span> gmake install <span class="o">&amp;&amp;</span> chown -R hacluster:haclient <span class="nv">$PREFIX</span>
