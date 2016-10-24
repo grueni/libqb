@@ -20,6 +20,10 @@
  */
 #include "os_base.h"
 
+#ifdef QB_SOLARIS
+#include <signal.h>
+#endif
+
 #ifdef HAVE_SYS_SHM_H
 #include <sys/shm.h>
 #endif
